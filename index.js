@@ -24,9 +24,29 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-
-
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
   console.log('Your app is listening on port ' + listener.address().port);
+});
+
+// api for date
+app.get('/api/' , (req, res) => {
+  let date = new Date();
+  res.json({"unix": date.getTime(),
+            "utc": date.toUTCString()
+           })
+});
+
+app.get("/api/:date?" , (req, res) => {
+  let date = new Date(req.params.date);
+  if (isNaN(date)) {
+    date = new Date(+req.params.date); // in case epoch ms is given
+  }
+  if (isNaN(date)) {
+    res.json({"error": "Invalid Date"});
+    return;
+  }
+  res.json({"unix": date.getTime(), 
+            "utc": date.toUTCString()
+          })
 });
